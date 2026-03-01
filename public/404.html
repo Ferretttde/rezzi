@@ -1,0 +1,12 @@
+<!doctype html>
+<html>
+  <head>
+    <script>
+      // GitHub Pages SPA redirect
+      // Redirects all paths to index.html preserving the path as a query param
+      const path = window.location.pathname.replace('/rezzi', '') || '/'
+      window.location.replace('/rezzi/?redirect=' + encodeURIComponent(path + window.location.search + window.location.hash))
+    </script>
+  </head>
+  <body></body>
+</html>
