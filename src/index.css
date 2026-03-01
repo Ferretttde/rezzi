@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #e8572a;
+  --color-primary-foreground: #ffffff;
+
+  --color-accent: #4a7c59;
+  --color-accent-foreground: #ffffff;
+
+  --color-surface: #faf9f7;
+  --color-background: #faf9f7;
+  --color-foreground: #1a1512;
+
+  --color-card: #ffffff;
+  --color-card-foreground: #1a1512;
+
+  --color-muted: #f0ede8;
+  --color-muted-foreground: #7c7167;
+
+  --color-border: #e8e3dc;
+
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --radius: 0.75rem;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-surface);
+    color: var(--color-foreground);
+    min-height: 100dvh;
+    overscroll-behavior-y: contain;
+  }
+
+  /* Safe area insets */
+  .pt-safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Hide scrollbars but keep scrollable */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Smooth momentum scrolling on iOS */
+  .overflow-x-auto,
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevent text selection during drag */
+  [data-dnd-kit-dragging] {
+    user-select: none;
+  }
+}
+
+@layer components {
+  /* Page transition animations */
+  @keyframes slide-in-from-right {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes slide-out-to-left {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(-100%); opacity: 0; }
+  }
+
+  /* Spring animation for FAB */
+  @keyframes spring-in {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .animate-spring-in {
+    animation: spring-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+}
