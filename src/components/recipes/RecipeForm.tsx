@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { useUpsertRecipe } from '@/hooks/useRecipes'
 import { useTags, useCreateTag } from '@/hooks/useTags'
 import { toast } from '@/components/ui/use-toast'
+import { ImagePicker } from '@/components/recipes/ImagePicker'
 import type { Recipe } from '@/types/app'
 import { cn } from '@/lib/utils'
 
@@ -143,11 +144,17 @@ export function RecipeForm({ initialData, mode = 'create' }: RecipeFormProps) {
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="image_url">Bild-URL</Label>
-          <Input id="image_url" placeholder="https://..." type="url" {...register('image_url')} />
-          {errors.image_url && <p className="text-xs text-destructive">{errors.image_url.message}</p>}
-        </div>
+        <Controller
+          control={control}
+          name="image_url"
+          render={({ field }) => (
+            <ImagePicker
+              value={field.value ?? null}
+              onChange={(url) => field.onChange(url ?? '')}
+              error={errors.image_url?.message}
+            />
+          )}
+        />
 
         <div className="space-y-2">
           <Label htmlFor="source_url" className="flex items-center gap-1">
