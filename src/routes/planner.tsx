@@ -12,6 +12,7 @@ import {
   closestCenter,
 } from '@dnd-kit/core'
 import { startOfWeek, addDays, format } from 'date-fns'
+import { de } from 'date-fns/locale'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { WeekNavigator } from '@/components/planner/WeekNavigator'
 import { DayColumn } from '@/components/planner/DayColumn'
@@ -22,6 +23,13 @@ import { useWeekPlans, useAddMealPlan, useUpdateMealPlan, useDeleteMealPlan } fr
 import { useRecipes } from '@/hooks/useRecipes'
 import { toast } from '@/components/ui/use-toast'
 import type { MealType } from '@/types/app'
+
+const MEAL_TYPE_DE: Record<MealType, string> = {
+  breakfast: 'Frühstück',
+  lunch: 'Mittagessen',
+  dinner: 'Abendessen',
+  snack: 'Snack',
+}
 
 function PlannerPage() {
   const [weekStart, setWeekStart] = useState(() =>
@@ -64,7 +72,7 @@ function PlannerPage() {
       meal_type: addingSlot.mealType,
     })
     setAddingSlot(null)
-    toast({ title: 'Added to planner!' })
+    toast({ title: 'Zum Wochenplan hinzugefügt!' })
   }
 
   const handleDelete = async (id: string) => {
@@ -106,7 +114,7 @@ function PlannerPage() {
 
   return (
     <div className="min-h-dvh">
-      <PageHeader title="Planner" />
+      <PageHeader title="Wochenplan" />
 
       <WeekNavigator weekStart={weekStart} onWeekChange={setWeekStart} />
 
@@ -147,16 +155,16 @@ function PlannerPage() {
       <BottomSheet open={!!addingSlot} onOpenChange={(open) => !open && setAddingSlot(null)}>
         <BottomSheetContent>
           <h3 className="font-semibold mb-1">
-            Add to {addingSlot?.mealType}
+            {addingSlot ? MEAL_TYPE_DE[addingSlot.mealType] : ''}
           </h3>
           <p className="text-sm text-muted-foreground mb-4">
-            {addingSlot ? format(addingSlot.date, 'EEEE, MMMM d') : ''}
+            {addingSlot ? format(addingSlot.date, 'EEEE, d. MMMM', { locale: de }) : ''}
           </p>
 
           <Input
             value={recipeSearch}
             onChange={(e) => setRecipeSearch(e.target.value)}
-            placeholder="Search recipes..."
+            placeholder="Rezepte suchen..."
             className="mb-4"
             autoFocus
           />
@@ -183,7 +191,7 @@ function PlannerPage() {
               </button>
             ))}
             {filteredRecipes?.length === 0 && (
-              <p className="text-center text-muted-foreground py-4 text-sm">No recipes found</p>
+              <p className="text-center text-muted-foreground py-4 text-sm">Keine Rezepte gefunden</p>
             )}
           </div>
         </BottomSheetContent>

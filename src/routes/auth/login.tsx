@@ -9,8 +9,8 @@ import { Label } from '@/components/ui/label'
 import { toast } from '@/components/ui/use-toast'
 
 const loginSchema = z.object({
-  email: z.string().email('Invalid email'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  email: z.string().email('Ungültige E-Mail-Adresse'),
+  password: z.string().min(6, 'Passwort muss mindestens 6 Zeichen lang sein'),
 })
 
 type LoginForm = z.infer<typeof loginSchema>
@@ -24,7 +24,7 @@ function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     const { error } = await supabase.auth.signInWithPassword(data)
     if (error) {
-      toast({ title: 'Login failed', description: error.message, variant: 'destructive' })
+      toast({ title: 'Anmeldung fehlgeschlagen', description: error.message, variant: 'destructive' })
     } else {
       void navigate({ to: '/' })
     }
@@ -37,31 +37,31 @@ function LoginPage() {
         <div className="text-center">
           <div className="text-6xl mb-3">🍳</div>
           <h1 className="text-3xl font-bold tracking-tight">Rezzi</h1>
-          <p className="text-muted-foreground mt-1 text-sm">Your shared recipe collection</p>
+          <p className="text-muted-foreground mt-1 text-sm">Deine gemeinsame Rezeptsammlung</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">E-Mail</Label>
             <Input id="email" type="email" autoComplete="email" {...register('email')} />
             {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Passwort</Label>
             <Input id="password" type="password" autoComplete="current-password" {...register('password')} />
             {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
           </div>
 
           <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-            {isSubmitting ? 'Signing in...' : 'Sign in'}
+            {isSubmitting ? 'Anmelden...' : 'Anmelden'}
           </Button>
         </form>
 
         <p className="text-center text-sm text-muted-foreground">
-          Don't have an account?{' '}
+          Noch kein Konto?{' '}
           <Link to="/auth/signup" className="text-primary font-medium">
-            Sign up
+            Registrieren
           </Link>
         </p>
       </div>

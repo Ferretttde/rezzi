@@ -21,26 +21,26 @@ const TAG_COLORS = [
 const ingredientSchema = z.object({
   amount: z.string(),
   unit: z.string(),
-  name: z.string().min(1, 'Required'),
+  name: z.string().min(1, 'Pflichtfeld'),
   group: z.string().optional(),
 })
 
 const stepSchema = z.object({
   order: z.number(),
-  instruction: z.string().min(1, 'Required'),
+  instruction: z.string().min(1, 'Pflichtfeld'),
   image_url: z.string().url().optional().or(z.literal('')),
 })
 
 const recipeSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
+  title: z.string().min(1, 'Titel ist erforderlich'),
   description: z.string().optional(),
-  image_url: z.string().url('Must be a valid URL').optional().or(z.literal('')),
-  source_url: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  image_url: z.string().url('Muss eine gültige URL sein').optional().or(z.literal('')),
+  source_url: z.string().url('Muss eine gültige URL sein').optional().or(z.literal('')),
   prep_time_mins: z.coerce.number().min(0).optional().nullable(),
   cook_time_mins: z.coerce.number().min(0).optional().nullable(),
   servings: z.coerce.number().min(1).optional().nullable(),
-  ingredients: z.array(ingredientSchema).min(1, 'Add at least one ingredient'),
-  steps: z.array(stepSchema).min(1, 'Add at least one step'),
+  ingredients: z.array(ingredientSchema).min(1, 'Mindestens eine Zutat hinzufügen'),
+  steps: z.array(stepSchema).min(1, 'Mindestens einen Schritt hinzufügen'),
   tagIds: z.array(z.string()),
 })
 
@@ -107,10 +107,10 @@ export function RecipeForm({ initialData, mode = 'create' }: RecipeFormProps) {
         tagIds: data.tagIds,
       })
 
-      toast({ title: mode === 'edit' ? 'Recipe updated!' : 'Recipe saved!', variant: 'success' as 'default' })
+      toast({ title: mode === 'edit' ? 'Rezept aktualisiert!' : 'Rezept gespeichert!', variant: 'success' as 'default' })
       void navigate({ to: '/recipes/$recipeId', params: { recipeId: id } })
     } catch {
-      toast({ title: 'Something went wrong', description: 'Please try again.', variant: 'destructive' })
+      toast({ title: 'Etwas ist schiefgelaufen', description: 'Bitte versuche es erneut.', variant: 'destructive' })
     }
   }
 
@@ -124,34 +124,34 @@ export function RecipeForm({ initialData, mode = 'create' }: RecipeFormProps) {
       {/* Basic Info */}
       <section className="space-y-4 px-4">
         <h2 className="text-base font-semibold text-muted-foreground uppercase tracking-wide">
-          Basic Info
+          Grundinfo
         </h2>
 
         <div className="space-y-2">
-          <Label htmlFor="title">Title *</Label>
-          <Input id="title" placeholder="e.g. Grandma's Pasta Sauce" {...register('title')} />
+          <Label htmlFor="title">Titel *</Label>
+          <Input id="title" placeholder="z.B. Omas Tomatensauce" {...register('title')} />
           {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description">Beschreibung</Label>
           <Textarea
             id="description"
-            placeholder="A short note about this recipe..."
+            placeholder="Eine kurze Notiz zu diesem Rezept..."
             rows={3}
             {...register('description')}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="image_url">Image URL</Label>
+          <Label htmlFor="image_url">Bild-URL</Label>
           <Input id="image_url" placeholder="https://..." type="url" {...register('image_url')} />
           {errors.image_url && <p className="text-xs text-destructive">{errors.image_url.message}</p>}
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="source_url" className="flex items-center gap-1">
-            <Link className="h-3.5 w-3.5" /> Source URL
+            <Link className="h-3.5 w-3.5" /> Quell-URL
           </Label>
           <Input id="source_url" placeholder="https://..." type="url" {...register('source_url')} />
         </div>
@@ -160,19 +160,19 @@ export function RecipeForm({ initialData, mode = 'create' }: RecipeFormProps) {
       {/* Timings */}
       <section className="px-4 space-y-4">
         <h2 className="text-base font-semibold text-muted-foreground uppercase tracking-wide">
-          Timings & Servings
+          Zeiten & Portionen
         </h2>
         <div className="grid grid-cols-3 gap-3">
           <div className="space-y-1">
-            <Label htmlFor="prep_time_mins" className="text-xs">Prep (min)</Label>
+            <Label htmlFor="prep_time_mins" className="text-xs">Vorbereitung (min)</Label>
             <Input id="prep_time_mins" type="number" min="0" {...register('prep_time_mins')} />
           </div>
           <div className="space-y-1">
-            <Label htmlFor="cook_time_mins" className="text-xs">Cook (min)</Label>
+            <Label htmlFor="cook_time_mins" className="text-xs">Kochen (min)</Label>
             <Input id="cook_time_mins" type="number" min="0" {...register('cook_time_mins')} />
           </div>
           <div className="space-y-1">
-            <Label htmlFor="servings" className="text-xs">Servings</Label>
+            <Label htmlFor="servings" className="text-xs">Portionen</Label>
             <Input id="servings" type="number" min="1" {...register('servings')} />
           </div>
         </div>
@@ -218,23 +218,23 @@ export function RecipeForm({ initialData, mode = 'create' }: RecipeFormProps) {
               <button
                 type="button"
                 onClick={async () => {
-                  const name = window.prompt('New tag name:')
+                  const name = window.prompt('Neuer Tag-Name:')
                   if (name?.trim()) await handleCreateTag(name.trim())
                 }}
                 className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium border border-dashed border-border text-muted-foreground"
               >
-                <Plus className="h-3.5 w-3.5" /> New tag
+                <Plus className="h-3.5 w-3.5" /> Neuer Tag
               </button>
             </div>
           )}
         />
-        <p className="text-xs text-muted-foreground">Selected: {selectedTagIds.length}</p>
+        <p className="text-xs text-muted-foreground">Ausgewählt: {selectedTagIds.length}</p>
       </section>
 
       {/* Ingredients */}
       <section className="px-4 space-y-3">
         <h2 className="text-base font-semibold text-muted-foreground uppercase tracking-wide">
-          Ingredients
+          Zutaten
         </h2>
         {errors.ingredients?.root && (
           <p className="text-xs text-destructive">{errors.ingredients.root.message}</p>
@@ -245,17 +245,17 @@ export function RecipeForm({ initialData, mode = 'create' }: RecipeFormProps) {
               <GripVertical className="h-5 w-5 text-muted-foreground mt-3 shrink-0" />
               <div className="flex-1 grid grid-cols-[80px_80px_1fr] gap-1.5">
                 <Input
-                  placeholder="Amount"
+                  placeholder="Menge"
                   {...register(`ingredients.${index}.amount`)}
                   className="text-sm"
                 />
                 <Input
-                  placeholder="Unit"
+                  placeholder="Einheit"
                   {...register(`ingredients.${index}.unit`)}
                   className="text-sm"
                 />
                 <Input
-                  placeholder="Ingredient name"
+                  placeholder="Zutat"
                   {...register(`ingredients.${index}.name`)}
                   className="text-sm"
                 />
@@ -282,14 +282,14 @@ export function RecipeForm({ initialData, mode = 'create' }: RecipeFormProps) {
           onClick={() => appendIngredient({ amount: '', unit: '', name: '', group: '' })}
           className="w-full"
         >
-          <Plus className="h-4 w-4" /> Add ingredient
+          <Plus className="h-4 w-4" /> Zutat hinzufügen
         </Button>
       </section>
 
       {/* Steps */}
       <section className="px-4 space-y-3">
         <h2 className="text-base font-semibold text-muted-foreground uppercase tracking-wide">
-          Steps
+          Schritte
         </h2>
         {errors.steps?.root && (
           <p className="text-xs text-destructive">{errors.steps.root.message}</p>
@@ -302,7 +302,7 @@ export function RecipeForm({ initialData, mode = 'create' }: RecipeFormProps) {
               </div>
               <div className="flex-1">
                 <Textarea
-                  placeholder={`Step ${index + 1} instructions...`}
+                  placeholder={`Schritt ${index + 1} Anleitung...`}
                   rows={3}
                   {...register(`steps.${index}.instruction`)}
                 />
@@ -329,14 +329,14 @@ export function RecipeForm({ initialData, mode = 'create' }: RecipeFormProps) {
           onClick={() => appendStep({ order: stepFields.length + 1, instruction: '' })}
           className="w-full"
         >
-          <Plus className="h-4 w-4" /> Add step
+          <Plus className="h-4 w-4" /> Schritt hinzufügen
         </Button>
       </section>
 
       {/* Submit */}
       <div className="px-4">
         <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-          {isSubmitting ? 'Saving...' : mode === 'edit' ? 'Update Recipe' : 'Save Recipe'}
+          {isSubmitting ? 'Wird gespeichert...' : mode === 'edit' ? 'Rezept aktualisieren' : 'Rezept speichern'}
         </Button>
       </div>
     </form>

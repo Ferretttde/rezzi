@@ -11,9 +11,9 @@ import { toast } from '@/components/ui/use-toast'
 import { generateInviteCode } from '@/lib/utils'
 
 const signupSchema = z.object({
-  display_name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  display_name: z.string().min(2, 'Name muss mindestens 2 Zeichen lang sein'),
+  email: z.string().email('Ungültige E-Mail-Adresse'),
+  password: z.string().min(8, 'Passwort muss mindestens 8 Zeichen lang sein'),
   household_mode: z.enum(['create', 'join']),
   household_name: z.string().optional(),
   invite_code: z.string().optional(),
@@ -80,11 +80,11 @@ function SignupPage() {
 
       if (profileError) throw profileError
 
-      toast({ title: 'Welcome to Rezzi! 🍳' })
+      toast({ title: 'Willkommen bei Rezzi! 🍳' })
       void navigate({ to: '/' })
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Sign up failed'
-      toast({ title: 'Sign up failed', description: message, variant: 'destructive' })
+      const message = err instanceof Error ? err.message : 'Registrierung fehlgeschlagen'
+      toast({ title: 'Registrierung fehlgeschlagen', description: message, variant: 'destructive' })
     }
   }
 
@@ -93,32 +93,32 @@ function SignupPage() {
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
           <div className="text-5xl mb-3">🍳</div>
-          <h1 className="text-2xl font-bold">Create your account</h1>
-          <p className="text-muted-foreground mt-1 text-sm">Start your shared recipe collection</p>
+          <h1 className="text-2xl font-bold">Konto erstellen</h1>
+          <p className="text-muted-foreground mt-1 text-sm">Starte deine gemeinsame Rezeptsammlung</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="display_name">Your name</Label>
+            <Label htmlFor="display_name">Dein Name</Label>
             <Input id="display_name" placeholder="Alex" {...register('display_name')} />
             {errors.display_name && <p className="text-xs text-destructive">{errors.display_name.message}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">E-Mail</Label>
             <Input id="email" type="email" autoComplete="email" {...register('email')} />
             {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Passwort</Label>
             <Input id="password" type="password" autoComplete="new-password" {...register('password')} />
             {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
           </div>
 
           {/* Household mode toggle */}
           <div className="space-y-3">
-            <Label>Household</Label>
+            <Label>Haushalt</Label>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
@@ -129,7 +129,7 @@ function SignupPage() {
                     : 'border-border bg-white'
                 }`}
               >
-                Create new
+                Neu erstellen
               </button>
               <button
                 type="button"
@@ -140,7 +140,7 @@ function SignupPage() {
                     : 'border-border bg-white'
                 }`}
               >
-                Join existing
+                Bestehendem beitreten
               </button>
             </div>
 
@@ -149,11 +149,11 @@ function SignupPage() {
             {mode === 'create' && (
               <div className="space-y-2">
                 <Label htmlFor="household_name" className="text-sm text-muted-foreground">
-                  Kitchen name (optional)
+                  Küchenname (optional)
                 </Label>
                 <Input
                   id="household_name"
-                  placeholder="Our Kitchen"
+                  placeholder="Unsere Küche"
                   {...register('household_name')}
                 />
               </div>
@@ -162,7 +162,7 @@ function SignupPage() {
             {mode === 'join' && (
               <div className="space-y-2">
                 <Label htmlFor="invite_code" className="text-sm text-muted-foreground">
-                  Invite code
+                  Einladungscode
                 </Label>
                 <Input
                   id="invite_code"
@@ -171,21 +171,21 @@ function SignupPage() {
                   {...register('invite_code')}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Ask your partner for their invite code from Settings
+                  Frage deinen Partner nach dem Einladungscode aus den Einstellungen
                 </p>
               </div>
             )}
           </div>
 
           <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-            {isSubmitting ? 'Creating account...' : 'Create account'}
+            {isSubmitting ? 'Konto wird erstellt...' : 'Konto erstellen'}
           </Button>
         </form>
 
         <p className="text-center text-sm text-muted-foreground">
-          Already have an account?{' '}
+          Bereits ein Konto?{' '}
           <Link to="/auth/login" className="text-primary font-medium">
-            Sign in
+            Anmelden
           </Link>
         </p>
       </div>

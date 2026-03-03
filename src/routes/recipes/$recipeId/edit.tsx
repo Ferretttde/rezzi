@@ -19,7 +19,7 @@ function EditRecipePage() {
           >
             <ChevronLeft className="h-6 w-6" />
           </Link>
-          <h1 className="text-lg font-semibold flex-1">Edit Recipe</h1>
+          <h1 className="text-lg font-semibold flex-1">Rezept bearbeiten</h1>
         </div>
       </header>
 
@@ -33,7 +33,7 @@ function EditRecipePage() {
         ) : recipe ? (
           <RecipeForm initialData={recipe} mode="edit" />
         ) : (
-          <p className="text-center text-muted-foreground py-8">Recipe not found</p>
+          <p className="text-center text-muted-foreground py-8">Rezept nicht gefunden</p>
         )}
       </div>
     </div>

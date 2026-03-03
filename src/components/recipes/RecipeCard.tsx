@@ -75,7 +75,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
           'absolute top-2 right-2 h-8 w-8 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm transition-all active:scale-90',
           recipe.is_favorite ? 'text-red-400' : 'text-white/80'
         )}
-        aria-label={recipe.is_favorite ? 'Remove from favorites' : 'Add to favorites'}
+        aria-label={recipe.is_favorite ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufügen'}
       >
         <Heart
           className="h-4 w-4"

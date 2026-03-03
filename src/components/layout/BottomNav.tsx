@@ -3,11 +3,11 @@ import { BookOpen, CalendarDays, Heart, Settings, Tag } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
-  { to: '/', label: 'Recipes', icon: BookOpen, exact: true },
-  { to: '/planner', label: 'Planner', icon: CalendarDays },
-  { to: '/favorites', label: 'Favorites', icon: Heart },
+  { to: '/', label: 'Rezepte', icon: BookOpen, exact: true },
+  { to: '/planner', label: 'Wochenplan', icon: CalendarDays },
+  { to: '/favorites', label: 'Favoriten', icon: Heart },
   { to: '/tags', label: 'Tags', icon: Tag },
-  { to: '/settings', label: 'Settings', icon: Settings },
+  { to: '/settings', label: 'Einstellungen', icon: Settings },
 ] as const
 
 export function BottomNav() {

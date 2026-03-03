@@ -28,14 +28,14 @@ function NewRecipePage() {
             <ChevronLeft className="h-6 w-6" />
           </Link>
           <h1 className="text-lg font-semibold flex-1">
-            {mode === 'url' ? 'Import Recipe' : 'New Recipe'}
+            {mode === 'url' ? 'Rezept importieren' : 'Neues Rezept'}
           </h1>
           {mode === 'manual' && (
             <button
               onClick={() => void navigate({ to: '/recipes/new', search: { mode: 'url' } })}
               className="text-sm text-primary font-medium"
             >
-              Import URL
+              URL importieren
             </button>
           )}
         </div>
@@ -45,9 +45,9 @@ function NewRecipePage() {
         {mode === 'url' && !importedData ? (
           <div className="px-4 space-y-6">
             <div>
-              <h2 className="text-lg font-semibold mb-1">Import from URL</h2>
+              <h2 className="text-lg font-semibold mb-1">Von URL importieren</h2>
               <p className="text-sm text-muted-foreground">
-                Paste a link from AllRecipes, BBC Good Food, Serious Eats, or any recipe site.
+                Füge einen Link von AllRecipes, BBC Good Food, Serious Eats oder einer anderen Rezeptseite ein.
               </p>
             </div>
             <UrlImportForm onImport={handleImport} />
@@ -56,7 +56,7 @@ function NewRecipePage() {
                 onClick={() => void navigate({ to: '/recipes/new', search: { mode: 'manual' } })}
                 className="text-sm text-primary font-medium"
               >
-                Fill in manually instead
+                Stattdessen manuell eingeben
               </button>
             </div>
           </div>

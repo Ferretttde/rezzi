@@ -27,9 +27,9 @@ function RecipeDetailPage() {
 
   const handleDelete = async () => {
     if (!recipe) return
-    if (!window.confirm('Delete this recipe?')) return
+    if (!window.confirm('Dieses Rezept löschen?')) return
     await deleteRecipe.mutateAsync(recipe.id)
-    toast({ title: 'Recipe deleted' })
+    toast({ title: 'Rezept gelöscht' })
     void navigate({ to: '/' })
   }
 
@@ -49,8 +49,8 @@ function RecipeDetailPage() {
   if (!recipe) {
     return (
       <div className="flex flex-col items-center justify-center min-h-dvh">
-        <p className="text-muted-foreground">Recipe not found</p>
-        <Link to="/" className="text-primary mt-2 text-sm">Back to recipes</Link>
+        <p className="text-muted-foreground">Rezept nicht gefunden</p>
+        <Link to="/" className="text-primary mt-2 text-sm">Zurück zu Rezepten</Link>
       </div>
     )
   }
@@ -107,7 +107,7 @@ function RecipeDetailPage() {
                     className="flex items-center gap-3 w-full rounded-xl p-3 hover:bg-muted transition-colors"
                   >
                     <Edit className="h-5 w-5 text-muted-foreground" />
-                    <span className="font-medium">Edit recipe</span>
+                    <span className="font-medium">Rezept bearbeiten</span>
                   </Link>
                 </BottomSheetClose>
 
@@ -119,7 +119,7 @@ function RecipeDetailPage() {
                     className="flex items-center gap-3 w-full rounded-xl p-3 hover:bg-muted transition-colors"
                   >
                     <ExternalLink className="h-5 w-5 text-muted-foreground" />
-                    <span className="font-medium">View source</span>
+                    <span className="font-medium">Quelle anzeigen</span>
                   </a>
                 )}
 
@@ -129,7 +129,7 @@ function RecipeDetailPage() {
                     className="flex items-center gap-3 w-full rounded-xl p-3 hover:bg-muted transition-colors text-destructive"
                   >
                     <Trash2 className="h-5 w-5" />
-                    <span className="font-medium">Delete recipe</span>
+                    <span className="font-medium">Rezept löschen</span>
                   </button>
                 </BottomSheetClose>
               </div>
@@ -171,12 +171,12 @@ function RecipeDetailPage() {
           )}
           {recipe.prep_time_mins && (
             <div className="text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">{formatTime(recipe.prep_time_mins)}</span> prep
+              <span className="font-medium text-foreground">{formatTime(recipe.prep_time_mins)}</span> Vorbereitung
             </div>
           )}
           {recipe.cook_time_mins && (
             <div className="text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">{formatTime(recipe.cook_time_mins)}</span> cook
+              <span className="font-medium text-foreground">{formatTime(recipe.cook_time_mins)}</span> Kochen
             </div>
           )}
         </div>
@@ -185,7 +185,7 @@ function RecipeDetailPage() {
         {recipe.servings && (
           <div className="flex items-center gap-4 py-4 border-b border-border/50">
             <Users className="h-4 w-4 text-muted-foreground shrink-0" />
-            <span className="text-sm font-medium flex-1">Servings</span>
+            <span className="text-sm font-medium flex-1">Portionen</span>
             <div className="flex items-center gap-3">
               <Button
                 variant="outline"
@@ -207,7 +207,7 @@ function RecipeDetailPage() {
                   onClick={() => setServings(null)}
                   className="text-xs text-primary"
                 >
-                  Reset
+                  Zurücksetzen
                 </button>
               )}
             </div>
@@ -218,10 +218,10 @@ function RecipeDetailPage() {
         <Tabs defaultValue="ingredients" className="mt-4">
           <TabsList>
             <TabsTrigger value="ingredients">
-              Ingredients ({recipe.ingredients.length})
+              Zutaten ({recipe.ingredients.length})
             </TabsTrigger>
             <TabsTrigger value="steps">
-              Steps ({recipe.steps.length})
+              Schritte ({recipe.steps.length})
             </TabsTrigger>
           </TabsList>
 

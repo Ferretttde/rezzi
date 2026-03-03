@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { format, addWeeks, subWeeks, startOfWeek, endOfWeek, isSameWeek } from 'date-fns'
+import { de } from 'date-fns/locale'
 import { Button } from '@/components/ui/button'
 
 interface WeekNavigatorProps {
@@ -13,8 +14,8 @@ export function WeekNavigator({ weekStart, onWeekChange }: WeekNavigatorProps) {
 
   const label =
     weekStart.getMonth() === weekEnd.getMonth()
-      ? `${format(weekStart, 'MMM d')}–${format(weekEnd, 'd, yyyy')}`
-      : `${format(weekStart, 'MMM d')} – ${format(weekEnd, 'MMM d, yyyy')}`
+      ? `${format(weekStart, 'd. MMM', { locale: de })} – ${format(weekEnd, 'd. MMM yyyy', { locale: de })}`
+      : `${format(weekStart, 'd. MMM', { locale: de })} – ${format(weekEnd, 'd. MMM yyyy', { locale: de })}`
 
   return (
     <div className="flex items-center gap-3 px-4 py-3">
@@ -22,7 +23,7 @@ export function WeekNavigator({ weekStart, onWeekChange }: WeekNavigatorProps) {
         variant="ghost"
         size="icon-sm"
         onClick={() => onWeekChange(subWeeks(weekStart, 1))}
-        aria-label="Previous week"
+        aria-label="Vorherige Woche"
       >
         <ChevronLeft className="h-5 w-5" />
       </Button>
@@ -35,7 +36,7 @@ export function WeekNavigator({ weekStart, onWeekChange }: WeekNavigatorProps) {
         variant="ghost"
         size="icon-sm"
         onClick={() => onWeekChange(addWeeks(weekStart, 1))}
-        aria-label="Next week"
+        aria-label="Nächste Woche"
       >
         <ChevronRight className="h-5 w-5" />
       </Button>
@@ -47,7 +48,7 @@ export function WeekNavigator({ weekStart, onWeekChange }: WeekNavigatorProps) {
           onClick={() => onWeekChange(startOfWeek(new Date(), { weekStartsOn: 1 }))}
           className="text-xs"
         >
-          Today
+          Heute
         </Button>
       )}
     </div>

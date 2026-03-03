@@ -91,13 +91,13 @@ function SettingsPage() {
 
   return (
     <div className="min-h-dvh pb-24">
-      <PageHeader title="Settings" />
+      <PageHeader title="Einstellungen" />
 
       <div className="px-4 space-y-6 mt-2">
         {/* Profile section */}
         <section>
           <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 px-1">
-            Profile
+            Profil
           </h2>
           <div className="bg-white rounded-2xl border border-border divide-y divide-border">
             <div className="flex items-center gap-3 p-4">
@@ -105,7 +105,7 @@ function SettingsPage() {
                 <User className="h-5 w-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <label className="block text-xs text-muted-foreground mb-1">Display name</label>
+                <label className="block text-xs text-muted-foreground mb-1">Anzeigename</label>
                 {isLoading ? (
                   <div className="h-5 w-32 bg-muted rounded animate-pulse" />
                 ) : (
@@ -114,12 +114,12 @@ function SettingsPage() {
                     onChange={(e) => handleNameChange(e.target.value)}
                     onBlur={handleNameBlur}
                     className="h-8 border-0 border-b border-border rounded-none px-0 focus-visible:ring-0 bg-transparent text-sm"
-                    placeholder="Your name"
+                    placeholder="Dein Name"
                   />
                 )}
               </div>
               {updateName.isPending && (
-                <span className="text-xs text-muted-foreground">Saving…</span>
+                <span className="text-xs text-muted-foreground">Wird gespeichert…</span>
               )}
             </div>
           </div>
@@ -129,7 +129,7 @@ function SettingsPage() {
         {profile?.household_id && (
           <section>
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 px-1">
-              Household
+              Haushalt
             </h2>
             <div className="bg-white rounded-2xl border border-border divide-y divide-border">
               <button
@@ -138,7 +138,7 @@ function SettingsPage() {
                 className="w-full flex items-center gap-3 p-4 text-left active:bg-muted/50 transition-colors"
               >
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-muted-foreground mb-0.5">Invite code</p>
+                  <p className="text-xs text-muted-foreground mb-0.5">Einladungscode</p>
                   {householdLoading ? (
                     <div className="h-5 w-24 bg-muted rounded animate-pulse" />
                   ) : (
@@ -155,7 +155,7 @@ function SettingsPage() {
               </button>
               <div className="px-4 py-2">
                 <p className="text-xs text-muted-foreground">
-                  Share this code with your partner to join the same household.
+                  Teile diesen Code mit deinem Partner, um denselben Haushalt zu nutzen.
                 </p>
               </div>
             </div>
@@ -165,7 +165,7 @@ function SettingsPage() {
         {/* Account section */}
         <section>
           <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 px-1">
-            Account
+            Konto
           </h2>
           <div className="bg-white rounded-2xl border border-border">
             <button
@@ -173,7 +173,7 @@ function SettingsPage() {
               className="w-full flex items-center gap-3 p-4 text-left text-destructive active:bg-muted/50 transition-colors rounded-2xl"
             >
               <LogOut className="h-5 w-5 flex-shrink-0" />
-              <span className="font-medium">Log out</span>
+              <span className="font-medium">Abmelden</span>
             </button>
           </div>
         </section>

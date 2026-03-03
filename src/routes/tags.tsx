@@ -47,9 +47,9 @@ function TagsPage() {
   }
 
   const handleDelete = async (id: string, name: string) => {
-    if (!window.confirm(`Delete tag "${name}"? It will be removed from all recipes.`)) return
+    if (!window.confirm(`Tag "${name}" löschen? Er wird von allen Rezepten entfernt.`)) return
     await deleteTag.mutateAsync(id)
-    toast({ title: `Tag "${name}" deleted` })
+    toast({ title: `Tag "${name}" gelöscht` })
   }
 
   const handleCreate = async () => {
@@ -58,17 +58,17 @@ function TagsPage() {
     setNewName('')
     setNewColor(TAG_COLORS[0] ?? '#e8572a')
     setShowNewForm(false)
-    toast({ title: 'Tag created!' })
+    toast({ title: 'Tag erstellt!' })
   }
 
   return (
     <div className="min-h-dvh">
       <PageHeader
         title="Tags"
-        subtitle={tags ? `${tags.length} tags` : undefined}
+        subtitle={tags ? `${tags.length} Tags` : undefined}
         right={
           <Button size="sm" onClick={() => setShowNewForm(true)}>
-            <Plus className="h-4 w-4" /> New tag
+            <Plus className="h-4 w-4" /> Neuer Tag
           </Button>
         }
       />
@@ -77,15 +77,15 @@ function TagsPage() {
         {/* New tag form */}
         {showNewForm && (
           <div className="bg-white rounded-2xl border border-border p-4 space-y-3">
-            <h3 className="font-semibold text-sm">New Tag</h3>
+            <h3 className="font-semibold text-sm">Neuer Tag</h3>
             <Input
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              placeholder="Tag name"
+              placeholder="Tag-Name"
               autoFocus
             />
             <div>
-              <p className="text-xs text-muted-foreground mb-2">Color</p>
+              <p className="text-xs text-muted-foreground mb-2">Farbe</p>
               <div className="flex gap-2 flex-wrap">
                 {TAG_COLORS.map((color) => (
                   <button
@@ -103,10 +103,10 @@ function TagsPage() {
             </div>
             <div className="flex gap-2">
               <Button onClick={handleCreate} disabled={!newName.trim()} size="sm">
-                Create
+                Erstellen
               </Button>
               <Button variant="ghost" size="sm" onClick={() => setShowNewForm(false)}>
-                Cancel
+                Abbrechen
               </Button>
             </div>
           </div>
@@ -114,13 +114,13 @@ function TagsPage() {
 
         {/* Tags list */}
         {isLoading ? (
-          <p className="text-center text-muted-foreground py-8 text-sm">Loading tags...</p>
+          <p className="text-center text-muted-foreground py-8 text-sm">Tags werden geladen...</p>
         ) : !tags?.length ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="text-5xl mb-4">🏷️</div>
-            <h3 className="font-semibold text-lg">No tags yet</h3>
+            <h3 className="font-semibold text-lg">Noch keine Tags</h3>
             <p className="text-muted-foreground text-sm mt-1 max-w-xs">
-              Create tags to organize your recipes by cuisine, diet, occasion, and more
+              Erstelle Tags um deine Rezepte nach Küche, Diät, Anlass und mehr zu organisieren
             </p>
           </div>
         ) : (
@@ -167,7 +167,7 @@ function TagsPage() {
                   />
                   <span className="font-medium flex-1">{tag.name}</span>
                   <span className="text-sm text-muted-foreground">
-                    {tag.recipe_count ?? 0} recipe{(tag.recipe_count ?? 0) !== 1 ? 's' : ''}
+                    {tag.recipe_count ?? 0} {(tag.recipe_count ?? 0) === 1 ? 'Rezept' : 'Rezepte'}
                   </span>
                   <button
                     onClick={() => startEdit(tag.id, tag.name, tag.color)}

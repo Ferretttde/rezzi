@@ -1,15 +1,16 @@
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { format, isToday } from 'date-fns'
+import { de } from 'date-fns/locale'
 import { Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { PlannerRecipeCard } from './PlannerRecipeCard'
 import type { MealPlan, MealType } from '@/types/app'
 
 const MEAL_TYPES: { key: MealType; label: string; emoji: string }[] = [
-  { key: 'breakfast', label: 'Breakfast', emoji: '🌅' },
-  { key: 'lunch', label: 'Lunch', emoji: '☀️' },
-  { key: 'dinner', label: 'Dinner', emoji: '🌙' },
+  { key: 'breakfast', label: 'Frühstück', emoji: '🌅' },
+  { key: 'lunch', label: 'Mittagessen', emoji: '☀️' },
+  { key: 'dinner', label: 'Abendessen', emoji: '🌙' },
   { key: 'snack', label: 'Snack', emoji: '🍎' },
 ]
 
@@ -51,7 +52,7 @@ function MealSlot({ date, mealType, plans, onAdd, onDelete }: MealSlotProps) {
           'w-full flex items-center justify-center text-muted-foreground/50 hover:text-primary/70 transition-colors py-1.5',
           plans.length > 0 && 'mt-1'
         )}
-        aria-label={`Add ${mealType}`}
+        aria-label={`${MEAL_TYPES.find((m) => m.key === mealType)?.label ?? mealType} hinzufügen`}
       >
         <Plus className="h-3.5 w-3.5" />
       </button>
@@ -74,7 +75,7 @@ export function DayColumn({ date, plans, onAdd, onDelete }: DayColumnProps) {
       {/* Day header */}
       <div className={cn('text-center py-2 mb-2')}>
         <p className={cn('text-[10px] font-medium uppercase tracking-wider text-muted-foreground')}>
-          {format(date, 'EEE')}
+          {format(date, 'EEE', { locale: de })}
         </p>
         <div
           className={cn(

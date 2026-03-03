@@ -35,7 +35,7 @@ export function UrlImportForm({ onImport }: UrlImportFormProps) {
             />
           </div>
           <Button onClick={() => void handleImport()} disabled={loading || !url.trim()}>
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Import'}
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Importieren'}
           </Button>
         </div>
 
@@ -43,16 +43,16 @@ export function UrlImportForm({ onImport }: UrlImportFormProps) {
           <div className="flex items-start gap-2 rounded-xl bg-destructive/10 p-3 text-sm text-destructive">
             <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
             <div>
-              <p className="font-medium">Could not import recipe</p>
+              <p className="font-medium">Rezept konnte nicht importiert werden</p>
               <p className="text-xs opacity-80 mt-0.5">{error}</p>
-              <p className="text-xs opacity-80 mt-1">You can still fill in the form manually.</p>
+              <p className="text-xs opacity-80 mt-1">Du kannst das Formular auch manuell ausfüllen.</p>
             </div>
           </div>
         )}
       </div>
 
       <p className="text-xs text-center text-muted-foreground">
-        Works with AllRecipes, BBC Good Food, Serious Eats, and more
+        Funktioniert mit AllRecipes, BBC Good Food, Serious Eats und mehr
       </p>
     </div>
   )

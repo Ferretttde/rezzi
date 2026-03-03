@@ -18,7 +18,7 @@ export function PlannerRecipeCard({ plan, onDelete }: PlannerRecipeCardProps) {
     transition,
   }
 
-  const title = plan.recipe?.title ?? plan.custom_title ?? 'Untitled'
+  const title = plan.recipe?.title ?? plan.custom_title ?? 'Ohne Titel'
 
   return (
     <div
@@ -33,7 +33,7 @@ export function PlannerRecipeCard({ plan, onDelete }: PlannerRecipeCardProps) {
         {...attributes}
         {...listeners}
         className="cursor-grab active:cursor-grabbing text-muted-foreground p-0.5 shrink-0 touch-none"
-        aria-label="Drag to reorder"
+        aria-label="Zum Neuanordnen ziehen"
       >
         <GripVertical className="h-3.5 w-3.5" />
       </button>
@@ -51,7 +51,7 @@ export function PlannerRecipeCard({ plan, onDelete }: PlannerRecipeCardProps) {
       <button
         onClick={() => onDelete(plan.id)}
         className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 text-muted-foreground hover:text-destructive shrink-0"
-        aria-label="Remove from planner"
+        aria-label="Aus dem Wochenplan entfernen"
       >
         <X className="h-3.5 w-3.5" />
       </button>

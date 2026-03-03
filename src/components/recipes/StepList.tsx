@@ -10,7 +10,7 @@ export function StepList({ steps }: StepListProps) {
   const [activeStep, setActiveStep] = useState<number | null>(null)
 
   if (!steps.length) {
-    return <p className="text-center text-muted-foreground py-8 text-sm">No steps added yet.</p>
+    return <p className="text-center text-muted-foreground py-8 text-sm">Noch keine Schritte hinzugefügt.</p>
   }
 
   return (
