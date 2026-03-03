@@ -1,5 +1,5 @@
 import { Link, useRouterState } from '@tanstack/react-router'
-import { BookOpen, CalendarDays, Heart, Tag } from 'lucide-react'
+import { BookOpen, CalendarDays, Heart, Settings, Tag } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -7,6 +7,7 @@ const navItems = [
   { to: '/planner', label: 'Planner', icon: CalendarDays },
   { to: '/favorites', label: 'Favorites', icon: Heart },
   { to: '/tags', label: 'Tags', icon: Tag },
+  { to: '/settings', label: 'Settings', icon: Settings },
 ] as const
 
 export function BottomNav() {

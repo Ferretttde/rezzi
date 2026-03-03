@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TagsRouteImport } from './routes/tags'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as PlannerRouteImport } from './routes/planner'
 import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as IndexRouteImport } from './routes/index'
@@ -22,6 +23,11 @@ import { Route as RecipesRecipeIdEditRouteImport } from './routes/recipes/$recip
 const TagsRoute = TagsRouteImport.update({
   id: '/tags',
   path: '/tags',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlannerRoute = PlannerRouteImport.update({
@@ -69,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/favorites': typeof FavoritesRoute
   '/planner': typeof PlannerRoute
+  '/settings': typeof SettingsRoute
   '/tags': typeof TagsRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/favorites': typeof FavoritesRoute
   '/planner': typeof PlannerRoute
+  '/settings': typeof SettingsRoute
   '/tags': typeof TagsRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/favorites': typeof FavoritesRoute
   '/planner': typeof PlannerRoute
+  '/settings': typeof SettingsRoute
   '/tags': typeof TagsRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/favorites'
     | '/planner'
+    | '/settings'
     | '/tags'
     | '/auth/login'
     | '/auth/signup'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/'
     | '/favorites'
     | '/planner'
+    | '/settings'
     | '/tags'
     | '/auth/login'
     | '/auth/signup'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/favorites'
     | '/planner'
+    | '/settings'
     | '/tags'
     | '/auth/login'
     | '/auth/signup'
@@ -139,6 +151,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FavoritesRoute: typeof FavoritesRoute
   PlannerRoute: typeof PlannerRoute
+  SettingsRoute: typeof SettingsRoute
   TagsRoute: typeof TagsRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthSignupRoute: typeof AuthSignupRoute
@@ -149,6 +162,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tags': {
       id: '/tags'
       path: '/tags'
@@ -219,6 +239,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FavoritesRoute: FavoritesRoute,
   PlannerRoute: PlannerRoute,
+  SettingsRoute: SettingsRoute,
   TagsRoute: TagsRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthSignupRoute: AuthSignupRoute,
