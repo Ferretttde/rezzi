@@ -22,20 +22,12 @@ import { Input } from '@/components/ui/input'
 import { useWeekPlans, useAddMealPlan, useUpdateMealPlan, useDeleteMealPlan } from '@/hooks/usePlanner'
 import { useRecipes } from '@/hooks/useRecipes'
 import { toast } from '@/components/ui/use-toast'
-import type { MealType } from '@/types/app'
-
-const MEAL_TYPE_DE: Record<MealType, string> = {
-  breakfast: 'Frühstück',
-  lunch: 'Mittagessen',
-  dinner: 'Abendessen',
-  snack: 'Snack',
-}
 
 function PlannerPage() {
   const [weekStart, setWeekStart] = useState(() =>
     startOfWeek(new Date(), { weekStartsOn: 1 })
   )
-  const [addingSlot, setAddingSlot] = useState<{ date: Date; mealType: MealType } | null>(null)
+  const [addingDate, setAddingDate] = useState<Date | null>(null)
   const [recipeSearch, setRecipeSearch] = useState('')
   const [activeId, setActiveId] = useState<string | null>(null)
 
@@ -52,26 +44,24 @@ function PlannerPage() {
 
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i))
 
-  const getPlansForDay = (date: Date, mealType?: MealType) => {
+  const getPlansForDay = (date: Date) => {
     const dateStr = format(date, 'yyyy-MM-dd')
-    return plans?.filter(
-      (p) => p.planned_date === dateStr && (!mealType || p.meal_type === mealType)
-    ) ?? []
+    return plans?.filter((p) => p.planned_date === dateStr) ?? []
   }
 
-  const handleAdd = (date: Date, mealType: MealType) => {
-    setAddingSlot({ date, mealType })
+  const handleAdd = (date: Date) => {
+    setAddingDate(date)
     setRecipeSearch('')
   }
 
   const handlePickRecipe = async (recipeId: string) => {
-    if (!addingSlot) return
+    if (!addingDate) return
     await addPlan.mutateAsync({
       recipe_id: recipeId,
-      planned_date: format(addingSlot.date, 'yyyy-MM-dd'),
-      meal_type: addingSlot.mealType,
+      planned_date: format(addingDate, 'yyyy-MM-dd'),
+      meal_type: 'dinner',
     })
-    setAddingSlot(null)
+    setAddingDate(null)
     toast({ title: 'Zum Wochenplan hinzugefügt!' })
   }
 
@@ -91,17 +81,14 @@ function PlannerPage() {
     const draggedPlan = plans?.find((p) => p.id === active.id)
     if (!draggedPlan) return
 
-    // over.id could be a droppable slot "YYYY-MM-DD-mealtype" or a plan id
     const overId = over.id as string
 
-    // Check if dropped on a droppable slot
-    const slotMatch = overId.match(/^(\d{4}-\d{2}-\d{2})-(breakfast|lunch|dinner|snack)$/)
-    if (slotMatch) {
-      const [, newDate, newMealType] = slotMatch
+    // Check if dropped on a day droppable (YYYY-MM-DD)
+    const dateMatch = overId.match(/^(\d{4}-\d{2}-\d{2})$/)
+    if (dateMatch) {
       await updatePlan.mutateAsync({
         id: draggedPlan.id,
-        planned_date: newDate,
-        meal_type: newMealType as MealType,
+        planned_date: dateMatch[1],
       })
     }
   }
@@ -132,7 +119,7 @@ function PlannerPage() {
                 key={date.toISOString()}
                 date={date}
                 plans={getPlansForDay(date)}
-                onAdd={handleAdd}
+                onAdd={(d) => handleAdd(d)}
                 onDelete={(id) => void handleDelete(id)}
               />
             ))}
@@ -152,13 +139,10 @@ function PlannerPage() {
       </DndContext>
 
       {/* Recipe picker bottom sheet */}
-      <BottomSheet open={!!addingSlot} onOpenChange={(open) => !open && setAddingSlot(null)}>
+      <BottomSheet open={!!addingDate} onOpenChange={(open) => !open && setAddingDate(null)}>
         <BottomSheetContent>
-          <h3 className="font-semibold mb-1">
-            {addingSlot ? MEAL_TYPE_DE[addingSlot.mealType] : ''}
-          </h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            {addingSlot ? format(addingSlot.date, 'EEEE, d. MMMM', { locale: de }) : ''}
+          <p className="font-semibold mb-4">
+            {addingDate ? format(addingDate, 'EEEE, d. MMMM', { locale: de }) : ''}
           </p>
 
           <Input
