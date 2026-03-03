@@ -27,13 +27,14 @@ interface ImportedRecipe {
   steps: RecipeStep[]
 }
 
-// Parse ISO 8601 duration to minutes (e.g. PT1H30M → 90)
+// Parse ISO 8601 duration to minutes (e.g. PT1H30M → 90, P0DT45M → 45)
 function parseDuration(iso: string | null | undefined): number | undefined {
   if (!iso) return undefined
-  const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?/)
+  const match = iso.match(/P(?:\d+D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/)
   if (!match) return undefined
   const hours = parseInt(match[1] ?? '0')
   const mins = parseInt(match[2] ?? '0')
+  // Ignore seconds — round up to 1 min only if no other unit present
   return hours * 60 + mins || undefined
 }
 
@@ -95,21 +96,41 @@ function extractFromJsonLd(html: string, sourceUrl: string): ImportedRecipe | nu
         // Extract steps
         const rawInstructions = item['recipeInstructions']
         const steps: RecipeStep[] = []
-        if (Array.isArray(rawInstructions)) {
-          rawInstructions.forEach((step, i) => {
-            if (typeof step === 'string') {
-              steps.push({ order: i + 1, instruction: step.trim() })
-            } else if (step && typeof step === 'object') {
-              const s = step as Record<string, unknown>
-              const instruction = (s['text'] ?? s['name'] ?? '') as string
-              if (instruction.trim()) {
-                steps.push({ order: i + 1, instruction: instruction.trim() })
-              }
-            }
-          })
-        } else if (typeof rawInstructions === 'string') {
-          steps.push({ order: 1, instruction: rawInstructions.trim() })
+
+        const pushStep = (text: string) => {
+          const trimmed = text.trim()
+          if (trimmed) steps.push({ order: steps.length + 1, instruction: trimmed })
         }
+
+        const extractSteps = (raw: unknown) => {
+          if (typeof raw === 'string') {
+            // Single string — split on double newlines or numbered lines
+            const parts = raw.split(/\n{2,}/)
+            if (parts.length > 1) {
+              parts.forEach((p) => pushStep(p))
+            } else {
+              // Try splitting on single newlines as fallback
+              raw.split('\n').forEach((p) => pushStep(p))
+            }
+          } else if (Array.isArray(raw)) {
+            raw.forEach((step) => {
+              if (typeof step === 'string') {
+                pushStep(step)
+              } else if (step && typeof step === 'object') {
+                const s = step as Record<string, unknown>
+                // HowToSection: recurse into itemListElement
+                if (s['@type'] === 'HowToSection' && Array.isArray(s['itemListElement'])) {
+                  extractSteps(s['itemListElement'])
+                } else {
+                  const instruction = (s['text'] ?? s['name'] ?? '') as string
+                  pushStep(instruction)
+                }
+              }
+            })
+          }
+        }
+
+        extractSteps(rawInstructions)
 
         // Extract servings
         const yieldVal = item['recipeYield']
@@ -123,13 +144,20 @@ function extractFromJsonLd(html: string, sourceUrl: string): ImportedRecipe | nu
           if (!isNaN(num)) servings = num
         }
 
+        const prepTime = parseDuration(item['prepTime'] as string)
+        const cookTime = parseDuration(item['cookTime'] as string)
+        const totalTime = parseDuration(item['totalTime'] as string)
+
+        // If cookTime is missing but totalTime is available, derive cookTime from it
+        const derivedCookTime = cookTime ?? (totalTime && prepTime ? totalTime - prepTime || undefined : undefined)
+
         return {
           title: (item['name'] as string) ?? 'Imported Recipe',
           description: (item['description'] as string) ?? undefined,
           image_url: imageUrl,
           source_url: sourceUrl,
-          prep_time_mins: parseDuration(item['prepTime'] as string),
-          cook_time_mins: parseDuration(item['cookTime'] as string),
+          prep_time_mins: prepTime,
+          cook_time_mins: derivedCookTime,
           servings,
           ingredients,
           steps,

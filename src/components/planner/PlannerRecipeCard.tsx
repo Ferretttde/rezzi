@@ -1,6 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { X, GripVertical } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
 import type { MealPlan } from '@/types/app'
 
@@ -46,7 +47,17 @@ export function PlannerRecipeCard({ plan, onDelete }: PlannerRecipeCardProps) {
         />
       )}
 
-      <span className="flex-1 text-xs font-medium line-clamp-1 leading-tight">{title}</span>
+      {plan.recipe?.id ? (
+        <Link
+          to="/recipes/$recipeId"
+          params={{ recipeId: plan.recipe.id }}
+          className="flex-1 text-xs font-medium line-clamp-1 leading-tight hover:underline"
+        >
+          {title}
+        </Link>
+      ) : (
+        <span className="flex-1 text-xs font-medium line-clamp-1 leading-tight">{title}</span>
+      )}
 
       <button
         onClick={() => onDelete(plan.id)}
