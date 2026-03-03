@@ -22,8 +22,8 @@ export default defineConfig({
         background_color: '#faf9f7',
         display: 'standalone',
         orientation: 'portrait',
-        start_url: '/',
-        scope: '/',
+        start_url: '/rezzi/',
+        scope: '/rezzi/',
         icons: [
           {
             src: 'icons/icon-192.png',
