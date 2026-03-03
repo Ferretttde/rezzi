@@ -20,15 +20,21 @@ export function DayColumn({ date, plans, onAdd, onDelete }: DayColumnProps) {
   const today = isToday(date)
 
   return (
-    <div className="flex items-start gap-3 py-1.5">
+    <div className={cn(
+      'flex items-start gap-3 rounded-2xl p-3',
+      today ? 'bg-primary/5' : 'bg-white border border-border/40',
+    )}>
       {/* Day header */}
-      <div className="w-10 shrink-0 flex flex-col items-center pt-1">
-        <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground leading-none">
+      <div className="w-9 shrink-0 flex flex-col items-center">
+        <p className={cn(
+          'text-[10px] font-semibold uppercase tracking-wider leading-none',
+          today ? 'text-primary' : 'text-muted-foreground'
+        )}>
           {format(date, 'EEE', { locale: de })}
         </p>
         <div
           className={cn(
-            'mt-1 h-7 w-7 rounded-full flex items-center justify-center text-sm font-semibold',
+            'mt-1 h-7 w-7 rounded-full flex items-center justify-center text-sm font-bold',
             today ? 'bg-primary text-white' : 'text-foreground'
           )}
         >
@@ -40,9 +46,8 @@ export function DayColumn({ date, plans, onAdd, onDelete }: DayColumnProps) {
       <div
         ref={setNodeRef}
         className={cn(
-          'flex-1 min-h-[48px] rounded-xl border border-dashed border-border/50 p-1.5 transition-colors',
-          isOver && 'border-primary/50 bg-primary/5',
-          plans.length > 0 && 'border-solid border-border/30'
+          'flex-1 min-h-[44px] rounded-xl transition-colors',
+          isOver && 'bg-primary/10',
         )}
       >
         <SortableContext items={plans.map((p) => p.id)} strategy={verticalListSortingStrategy}>
@@ -56,12 +61,13 @@ export function DayColumn({ date, plans, onAdd, onDelete }: DayColumnProps) {
         <button
           onClick={() => onAdd(date)}
           className={cn(
-            'w-full flex items-center justify-center text-muted-foreground/50 hover:text-primary/70 transition-colors py-1.5',
+            'w-full flex items-center justify-center gap-1.5 text-xs text-muted-foreground/50 hover:text-primary/70 transition-colors py-2',
             plans.length > 0 && 'mt-1'
           )}
           aria-label="Gericht hinzufügen"
         >
           <Plus className="h-3.5 w-3.5" />
+          {plans.length === 0 && <span>Gericht hinzufügen</span>}
         </button>
       </div>
     </div>
