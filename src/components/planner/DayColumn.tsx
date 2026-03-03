@@ -20,15 +20,15 @@ export function DayColumn({ date, plans, onAdd, onDelete }: DayColumnProps) {
   const today = isToday(date)
 
   return (
-    <div className="w-[140px] flex flex-col gap-1">
+    <div className="flex items-start gap-3 py-1.5">
       {/* Day header */}
-      <div className="text-center py-2">
-        <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+      <div className="w-10 shrink-0 flex flex-col items-center pt-1">
+        <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground leading-none">
           {format(date, 'EEE', { locale: de })}
         </p>
         <div
           className={cn(
-            'mx-auto mt-0.5 h-7 w-7 rounded-full flex items-center justify-center text-sm font-semibold',
+            'mt-1 h-7 w-7 rounded-full flex items-center justify-center text-sm font-semibold',
             today ? 'bg-primary text-white' : 'text-foreground'
           )}
         >
@@ -40,7 +40,7 @@ export function DayColumn({ date, plans, onAdd, onDelete }: DayColumnProps) {
       <div
         ref={setNodeRef}
         className={cn(
-          'flex-1 min-h-[80px] rounded-xl border border-dashed border-border/50 p-1.5 transition-colors',
+          'flex-1 min-h-[48px] rounded-xl border border-dashed border-border/50 p-1.5 transition-colors',
           isOver && 'border-primary/50 bg-primary/5',
           plans.length > 0 && 'border-solid border-border/30'
         )}
@@ -56,7 +56,7 @@ export function DayColumn({ date, plans, onAdd, onDelete }: DayColumnProps) {
         <button
           onClick={() => onAdd(date)}
           className={cn(
-            'w-full flex items-center justify-center text-muted-foreground/50 hover:text-primary/70 transition-colors py-2',
+            'w-full flex items-center justify-center text-muted-foreground/50 hover:text-primary/70 transition-colors py-1.5',
             plans.length > 0 && 'mt-1'
           )}
           aria-label="Gericht hinzufügen"

@@ -112,18 +112,16 @@ function PlannerPage() {
         onDragEnd={(e) => void handleDragEnd(e)}
       >
         {/* Week grid — horizontal scroll */}
-        <div className="overflow-x-auto px-4">
-          <div className="flex gap-2 min-w-max pb-4">
-            {weekDays.map((date) => (
-              <DayColumn
-                key={date.toISOString()}
-                date={date}
-                plans={getPlansForDay(date)}
-                onAdd={(d) => handleAdd(d)}
-                onDelete={(id) => void handleDelete(id)}
-              />
-            ))}
-          </div>
+        <div className="flex flex-col gap-1 px-4 pb-4">
+          {weekDays.map((date) => (
+            <DayColumn
+              key={date.toISOString()}
+              date={date}
+              plans={getPlansForDay(date)}
+              onAdd={(d) => handleAdd(d)}
+              onDelete={(id) => void handleDelete(id)}
+            />
+          ))}
         </div>
 
         <DragOverlay>
