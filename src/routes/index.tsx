@@ -142,6 +142,19 @@ function RecipeListPage() {
             <button
               onClick={() => {
                 setFabOpen(false)
+                void navigate({ to: '/recipes/new', search: { mode: 'photo' } })
+              }}
+              className="w-full flex items-center gap-4 rounded-2xl bg-muted p-4 text-left active:bg-muted/70"
+            >
+              <span className="text-3xl">📷</span>
+              <div>
+                <p className="font-semibold">Foto importieren</p>
+                <p className="text-sm text-muted-foreground">Kochbuch, Rezeptkarte oder Screenshot</p>
+              </div>
+            </button>
+            <button
+              onClick={() => {
+                setFabOpen(false)
                 void navigate({ to: '/recipes/new', search: { mode: 'url' } })
               }}
               className="w-full flex items-center gap-4 rounded-2xl bg-muted p-4 text-left active:bg-muted/70"
