@@ -80,13 +80,13 @@ export function usePhotoImport() {
       if (error) {
         // Try to read the actual error message from the response body
         const ctx = (error as Record<string, unknown>).context
-        if (ctx instanceof Response) {
+        if (ctx != null && typeof (ctx as { text?: unknown }).text === 'function') {
           try {
-            const text = await ctx.text()
+            const text = await (ctx as Response).text()
             const parsed = JSON.parse(text) as { error?: string }
             if (parsed.error) throw new Error(parsed.error)
           } catch (inner) {
-            if (inner instanceof SyntaxError === false) throw inner
+            if (inner instanceof Error && inner.message !== error.message) throw inner
           }
         }
         throw error
