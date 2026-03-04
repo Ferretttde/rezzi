@@ -78,12 +78,14 @@ export function usePhotoImport() {
       })
 
       if (error) {
-        if ('context' in error && error.context instanceof Response) {
+        // FunctionsHttpError exposes the raw response — try to read the actual message
+        const ctx = (error as Record<string, unknown>).context
+        if (ctx instanceof Response) {
           try {
-            const body = await (error.context as Response).json() as { error?: string }
-            throw new Error(body.error ?? error.message)
+            const body = await ctx.clone().json() as { error?: string }
+            if (body.error) throw new Error(body.error)
           } catch (parseErr) {
-            if (parseErr instanceof Error && parseErr.message !== error.message) throw parseErr
+            if (parseErr instanceof Error && parseErr !== error) throw parseErr
           }
         }
         throw error

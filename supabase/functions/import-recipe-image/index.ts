@@ -1,5 +1,3 @@
-import Anthropic from 'npm:@anthropic-ai/sdk'
-
 interface Ingredient {
   amount: string
   unit: string
@@ -48,13 +46,15 @@ Deno.serve(async (req) => {
 
     const apiKey = Deno.env.get('ANTHROPIC_API_KEY')
     if (!apiKey) {
+      console.error('[import-recipe-image] ANTHROPIC_API_KEY not set')
       return new Response(
-        JSON.stringify({ error: 'ANTHROPIC_API_KEY not configured' }),
+        JSON.stringify({ error: 'ANTHROPIC_API_KEY nicht konfiguriert' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    const client = new Anthropic({ apiKey })
+    const validMediaTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+    const safeMediaType = validMediaTypes.includes(mediaType) ? mediaType : 'image/jpeg'
 
     const prompt = `Extrahiere das Rezept aus diesem Bild. Antworte ausschließlich mit validem JSON ohne Markdown-Codeblöcke:
 {
@@ -64,65 +64,79 @@ Deno.serve(async (req) => {
   "cook_time_mins": null,
   "servings": null,
   "ingredients": [{"amount": "200", "unit": "g", "name": "Mehl", "group": ""}],
-  "steps": [{"order": 1, "instruction": "Schritt beschreibung"}]
+  "steps": [{"order": 1, "instruction": "Schritt"}]
 }
 
-Wichtig:
-- title: Pflichtfeld, als String
+Regeln:
+- title: Pflichtfeld als String
 - description: String oder null
 - prep_time_mins / cook_time_mins / servings: Zahl oder null
-- ingredients: Array mit amount (String), unit (String), name (String), group (String, leer wenn keine Gruppe)
-- steps: Array mit order (Zahl ab 1) und instruction (String)
-- Antworte NUR mit dem JSON-Objekt, kein weiterer Text`
+- ingredients: amount, unit, name, group als Strings (group leer wenn keine Gruppe)
+- steps: order ab 1, instruction als String
+- NUR das JSON-Objekt, kein weiterer Text`
 
-    console.log('[import-recipe-image] calling Claude Vision...')
+    console.log('[import-recipe-image] calling Anthropic API...')
 
-    const validMediaTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'] as const
-    type ValidMediaType = typeof validMediaTypes[number]
-    const safeMediaType: ValidMediaType = validMediaTypes.includes(mediaType as ValidMediaType)
-      ? (mediaType as ValidMediaType)
-      : 'image/jpeg'
-
-    const message = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 2048,
-      messages: [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'image',
-              source: {
-                type: 'base64',
-                media_type: safeMediaType,
-                data: imageBase64,
+    const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 2048,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'image',
+                source: {
+                  type: 'base64',
+                  media_type: safeMediaType,
+                  data: imageBase64,
+                },
               },
-            },
-            {
-              type: 'text',
-              text: prompt,
-            },
-          ],
-        },
-      ],
+              {
+                type: 'text',
+                text: prompt,
+              },
+            ],
+          },
+        ],
+      }),
     })
 
-    const responseText = message.content[0]?.type === 'text' ? message.content[0].text : ''
-    console.log('[import-recipe-image] raw response:', responseText.slice(0, 200))
+    if (!anthropicRes.ok) {
+      const errText = await anthropicRes.text()
+      console.error('[import-recipe-image] Anthropic API error:', anthropicRes.status, errText)
+      return new Response(
+        JSON.stringify({ error: `Anthropic API Fehler: ${anthropicRes.status} – ${errText.slice(0, 200)}` }),
+        { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    const anthropicData = await anthropicRes.json() as {
+      content: Array<{ type: string; text: string }>
+    }
+
+    const responseText = anthropicData.content?.[0]?.text ?? ''
+    console.log('[import-recipe-image] response preview:', responseText.slice(0, 300))
 
     let recipe: ImportedRecipe
     try {
-      // Strip potential markdown code fences
       const cleaned = responseText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim()
       recipe = JSON.parse(cleaned) as ImportedRecipe
     } catch {
+      console.error('[import-recipe-image] JSON parse failed:', responseText.slice(0, 300))
       return new Response(
         JSON.stringify({ error: 'Claude hat kein gültiges JSON zurückgegeben. Bitte erneut versuchen.' }),
         { status: 422, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    // Ensure required fields
     if (!recipe.title || !Array.isArray(recipe.ingredients) || !Array.isArray(recipe.steps)) {
       return new Response(
         JSON.stringify({ error: 'Unvollständige Rezeptdaten extrahiert. Bitte manuell eingeben.' }),
