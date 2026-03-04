@@ -21,6 +21,16 @@ function RecipeDetailPage() {
   const deleteRecipe = useDeleteRecipe()
   const toggleFavorite = useToggleFavorite()
   const [servings, setServings] = useState<number | null>(null)
+  const [checkedIngredients, setCheckedIngredients] = useState<Set<number>>(new Set())
+
+  const toggleIngredient = (index: number) => {
+    setCheckedIngredients((prev) => {
+      const next = new Set(prev)
+      if (next.has(index)) next.delete(index)
+      else next.add(index)
+      return next
+    })
+  }
 
   const effectiveServings = servings ?? recipe?.servings ?? 4
   const totalTime = (recipe?.prep_time_mins ?? 0) + (recipe?.cook_time_mins ?? 0)
@@ -230,6 +240,8 @@ function RecipeDetailPage() {
               ingredients={recipe.ingredients}
               servings={recipe.servings ?? 4}
               scaledServings={effectiveServings}
+              checked={checkedIngredients}
+              onToggle={toggleIngredient}
             />
           </TabsContent>
 

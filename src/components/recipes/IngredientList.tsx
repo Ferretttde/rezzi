@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { scaleIngredientAmount } from '@/lib/utils'
 import type { Ingredient } from '@/types/app'
 import { cn } from '@/lib/utils'
@@ -7,23 +6,12 @@ interface IngredientListProps {
   ingredients: Ingredient[]
   servings: number
   scaledServings: number
+  checked: Set<number>
+  onToggle: (index: number) => void
 }
 
-export function IngredientList({ ingredients, servings, scaledServings }: IngredientListProps) {
-  const [checked, setChecked] = useState<Set<number>>(new Set())
+export function IngredientList({ ingredients, servings, scaledServings, checked, onToggle }: IngredientListProps) {
   const factor = servings > 0 ? scaledServings / servings : 1
-
-  const toggleItem = (index: number) => {
-    setChecked((prev) => {
-      const next = new Set(prev)
-      if (next.has(index)) {
-        next.delete(index)
-      } else {
-        next.add(index)
-      }
-      return next
-    })
-  }
 
   // Group ingredients
   const groups = ingredients.reduce<Record<string, { ingredient: Ingredient; index: number }[]>>(
@@ -56,7 +44,7 @@ export function IngredientList({ ingredients, servings, scaledServings }: Ingred
               return (
                 <button
                   key={index}
-                  onClick={() => toggleItem(index)}
+                  onClick={() => onToggle(index)}
                   className={cn(
                     'w-full flex items-center gap-3 px-4 py-3 text-left rounded-xl transition-colors active:bg-muted/50',
                     isChecked && 'opacity-50'
