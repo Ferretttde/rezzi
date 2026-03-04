@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { ImportedRecipe } from '@/types/app'
 
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string
+
 interface ImportState {
   loading: boolean
   error: string | null
@@ -73,27 +76,31 @@ export function usePhotoImport() {
       const blob = await resizeImage(file, 1200)
       const imageBase64 = await blobToBase64(blob)
 
-      const { data, error } = await supabase.functions.invoke<ImportedRecipe>('import-recipe-image', {
-        body: { imageBase64, mediaType: 'image/jpeg' },
-      })
+      // Get current session token
+      const { data: { session } } = await supabase.auth.getSession()
 
-      if (error) {
-        // FunctionsHttpError exposes the raw response — try to read the actual message
-        const ctx = (error as Record<string, unknown>).context
-        if (ctx instanceof Response) {
-          try {
-            const body = await ctx.clone().json() as { error?: string }
-            if (body.error) throw new Error(body.error)
-          } catch (parseErr) {
-            if (parseErr instanceof Error && parseErr !== error) throw parseErr
-          }
+      // Use raw fetch to properly read error bodies from the edge function
+      const res = await fetch(
+        `${SUPABASE_URL}/functions/v1/import-recipe-image`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${session?.access_token ?? SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({ imageBase64, mediaType: 'image/jpeg' }),
         }
-        throw error
-      }
-      if (!data) throw new Error('Keine Daten vom Import zurückgegeben')
+      )
 
-      setState({ loading: false, error: null, recipe: data })
-      return data
+      const json = await res.json() as ImportedRecipe & { error?: string }
+
+      if (!res.ok) {
+        throw new Error(json.error ?? `Fehler ${res.status}`)
+      }
+
+      setState({ loading: false, error: null, recipe: json })
+      return json
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Foto-Import fehlgeschlagen'
       setState({ loading: false, error: message, recipe: null })
