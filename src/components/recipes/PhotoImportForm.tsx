@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Camera, Loader2, AlertCircle, ImageIcon } from 'lucide-react'
+import { Camera, Loader2, AlertCircle, ImageIcon, Images } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { usePhotoImport } from '@/hooks/usePhotoImport'
 import type { ImportedRecipe } from '@/types/app'
@@ -9,7 +9,8 @@ interface PhotoImportFormProps {
 }
 
 export function PhotoImportForm({ onImport }: PhotoImportFormProps) {
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const cameraInputRef = useRef<HTMLInputElement>(null)
+  const galleryInputRef = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const { loading, error, importFromPhoto } = usePhotoImport()
@@ -31,7 +32,15 @@ export function PhotoImportForm({ onImport }: PhotoImportFormProps) {
   return (
     <div className="space-y-4">
       <input
-        ref={fileInputRef}
+        ref={cameraInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+      <input
+        ref={galleryInputRef}
         type="file"
         accept="image/*"
         className="hidden"
@@ -39,22 +48,28 @@ export function PhotoImportForm({ onImport }: PhotoImportFormProps) {
       />
 
       {!preview ? (
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          className="w-full border-2 border-dashed border-border rounded-2xl p-10 flex flex-col items-center gap-3 text-muted-foreground active:bg-muted/50 transition-colors"
-        >
-          <Camera className="h-10 w-10" />
-          <div className="text-center">
-            <p className="font-medium text-foreground">Foto aufnehmen oder auswählen</p>
-            <p className="text-sm mt-0.5">Kamera oder Galerie</p>
-          </div>
-        </button>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            onClick={() => cameraInputRef.current?.click()}
+            className="flex flex-col items-center gap-2 p-6 rounded-2xl border-2 border-dashed border-border text-muted-foreground active:bg-muted/50 transition-colors"
+          >
+            <Camera className="h-8 w-8" />
+            <p className="text-sm font-medium text-foreground">Kamera</p>
+          </button>
+          <button
+            onClick={() => galleryInputRef.current?.click()}
+            className="flex flex-col items-center gap-2 p-6 rounded-2xl border-2 border-dashed border-border text-muted-foreground active:bg-muted/50 transition-colors"
+          >
+            <Images className="h-8 w-8" />
+            <p className="text-sm font-medium text-foreground">Galerie</p>
+          </button>
+        </div>
       ) : (
         <div className="space-y-3">
           <div className="relative rounded-2xl overflow-hidden bg-muted aspect-[4/3]">
             <img src={preview} alt="Rezept-Vorschau" className="w-full h-full object-cover" />
             <button
-              onClick={() => fileInputRef.current?.click()}
+              onClick={() => galleryInputRef.current?.click()}
               className="absolute bottom-2 right-2 bg-black/60 text-white rounded-xl px-3 py-1.5 text-xs flex items-center gap-1.5"
             >
               <ImageIcon className="h-3.5 w-3.5" />
