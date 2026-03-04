@@ -35,6 +35,7 @@ export interface Tag {
   household_id: string
   name: string
   color: string
+  category?: string | null
   created_at: string
   recipe_count?: number
 }

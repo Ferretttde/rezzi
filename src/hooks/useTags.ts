@@ -28,11 +28,19 @@ export function useTags() {
   })
 }
 
+export function useTagCategories() {
+  const { data: tags } = useTags()
+  const categories = Array.from(
+    new Set((tags ?? []).map((t) => t.category).filter((c): c is string => !!c))
+  ).sort()
+  return categories
+}
+
 export function useCreateTag() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (input: { name: string; color: string }) => {
+    mutationFn: async (input: { name: string; color: string; category?: string }) => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Not authenticated')
 
@@ -63,10 +71,10 @@ export function useUpdateTag() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (input: { id: string; name: string; color: string }) => {
+    mutationFn: async (input: { id: string; name: string; color: string; category?: string }) => {
       const { error } = await supabase
         .from('tags')
-        .update({ name: input.name, color: input.color })
+        .update({ name: input.name, color: input.color, category: input.category ?? null })
         .eq('id', input.id)
       if (error) throw error
     },

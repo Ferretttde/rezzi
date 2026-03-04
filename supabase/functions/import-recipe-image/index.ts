@@ -56,7 +56,7 @@ Deno.serve(async (req) => {
     const validMediaTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
     const safeMediaType = validMediaTypes.includes(mediaType) ? mediaType : 'image/jpeg'
 
-    const prompt = `Extrahiere das Rezept aus diesem Bild. Antworte ausschließlich mit validem JSON ohne Markdown-Codeblöcke:
+    const prompt = `Extrahiere das Rezept aus diesem Bild. Achte darauf, dass du alle zutaten erfasst. achte darauf, dass du alle schritte der Anleitung übernimmst. Fasse nichts zusammen, erfinde nichts dazu.  Antworte ausschließlich mit validem JSON ohne Markdown-Codeblöcke:
 {
   "title": "Rezepttitel",
   "description": "Kurze Beschreibung oder null",
